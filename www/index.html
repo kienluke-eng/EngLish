@@ -26687,21 +26687,55 @@ window.SpeechEngine = (function(){
   }
 
   /**
+   * Máy đang chạy trong app Android đã đóng gói (.apk) và có sẵn plugin TTS gốc không?
+   * WebView của Android (dùng để hiển thị app khi đóng gói bằng Capacitor) THƯỜNG KHÔNG
+   * có giọng đọc Web Speech API như trình duyệt Chrome thật — nên khi chạy trong app,
+   * ta phải gọi qua plugin native (@capacitor-community/text-to-speech), plugin này gọi
+   * thẳng tới bộ đọc giọng gốc của hệ điều hành Android, không phụ thuộc WebView.
+   */
+  function hasNativeTTS(){
+    return !!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.TextToSpeech
+      && (!window.Capacitor.isNativePlatform || window.Capacitor.isNativePlatform()));
+  }
+
+  /**
    * Đọc to một đoạn text — HÀM DUY NHẤT app gọi để đọc to bất cứ đâu.
    * @param {string} text
    * @param {object} [opts] - { lang, rate, onEnd }
    */
   function speak(text, opts){
     opts = opts || {};
+    if (!text) return;
+    const prefs = getPrefs();
+    const rate = opts.rate || prefs.rate || 0.95;
+
+    // ---- Chạy trong app Android (.apk): dùng giọng đọc GỐC của máy qua plugin native ----
+    if (hasNativeTTS()){
+      try {
+        const TTS = window.Capacitor.Plugins.TextToSpeech;
+        TTS.stop().catch(()=>{});
+        TTS.speak({
+          text: text,
+          lang: opts.lang || "en-US",
+          rate: rate,
+          pitch: 1.0,
+          volume: 1.0,
+          category: "ambient"
+        }).then(() => { if (typeof opts.onEnd === "function") opts.onEnd(); })
+          .catch(() => { /* im lặng bỏ qua nếu máy không có giọng đọc TTS cài sẵn */ });
+      } catch(e){ /* im lặng bỏ qua */ }
+      return;
+    }
+
+    // ---- Chạy qua trình duyệt (PWA/web): dùng Web Speech API như cũ ----
     try {
-      if (!('speechSynthesis' in window) || !text) return;
+      if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
       const v = chosenVoice();
       if (v){ utter.voice = v; utter.lang = v.lang; }
       else { utter.lang = opts.lang || "en-US"; }
-      const prefs = getPrefs();
-      utter.rate = opts.rate || prefs.rate || 0.95;
+      utter.rate = rate;
       utter.pitch = 1;
       if (typeof opts.onEnd === "function") utter.onend = opts.onEnd;
       window.speechSynthesis.speak(utter);
