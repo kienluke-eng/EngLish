@@ -1,0 +1,15 @@
+{
+  "appId": "vn.chla.englishthpt",
+  "appName": "EnglishTHPT",
+  "webDir": "www",
+  "backgroundColor": "#0f172a",
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_notify",
+      "iconColor": "#0f172a"
+    }
+  }
+}

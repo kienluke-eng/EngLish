@@ -1,0 +1,18 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Android / Gradle build output (được tạo lại mỗi lần build, không cần lưu trong Git)
+android/app/build/
+android/build/
+android/.gradle/
+android/captures/
+android/local.properties
+android/.idea/
+android/*.iml
+android/app/*.iml
+android/.cxx/
+
+# macOS / editor
+.DS_Store
+.vscode/

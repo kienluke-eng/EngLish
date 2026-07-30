@@ -1,0 +1,19 @@
+{
+  "name": "englishthpt-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EnglishTHPT - On thi tot nghiep THPT mon Tieng Anh (Capacitor Android wrapper)",
+  "scripts": {
+    "sync": "cap sync android",
+    "open:android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
+    "@capacitor/local-notifications": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.0.0"
+  }
+}

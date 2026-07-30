@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">EnglishTHPT</string>
+    <string name="title_activity_main">EnglishTHPT</string>
+    <string name="package_name">vn.chla.englishthpt</string>
+    <string name="custom_url_scheme">vn.chla.englishthpt</string>
+</resources>
